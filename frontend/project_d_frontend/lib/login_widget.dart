@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 
-class LoginWidget extends StatelessWidget {
+class LoginWidget extends StatefulWidget {
+
+  @override
+  State<StatefulWidget> createState() => new _LoginWidget();
+
+}
+
+
+class _LoginWidget extends State<LoginWidget>{
+
 
   @override
   Widget build(BuildContext context) {
