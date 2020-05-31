@@ -7,17 +7,17 @@ class LoginWidget extends StatefulWidget {
   State<StatefulWidget> createState() => new _LoginWidget();
 }
 
-class EmailValidator {
-  static String validate(String value) {
-    if (value.isEmpty){
-      return "dit veld mag niet leeg zijn";
-    }
-    return null;
-  }
+// class EmailValidator {
+//   static String validate(String value) {
+//     if (value.isEmpty){
+//       return "dit veld mag niet leeg zijn";
+//     }
+//     return null;
+//   }
 
 
 
-}
+
 
 class _LoginWidget extends State<LoginWidget> {
   String _email, _password;
@@ -33,7 +33,7 @@ class _LoginWidget extends State<LoginWidget> {
       padding: const EdgeInsets.fromLTRB(0.0, 100.0, 0.0, 0.0),
       child: TextFormField(
         keyboardType: TextInputType.emailAddress,
-        validator: EmailValidator.validate,
+        validator: (value) => value.isEmpty ? "Email can/'t be empty" : null,
         onSaved: (value) => _email = value.trim(),
         decoration: InputDecoration(
           hintText: 'Email',
@@ -54,7 +54,7 @@ class _LoginWidget extends State<LoginWidget> {
   Widget password() {
     return TextFormField(
       keyboardType: TextInputType.visiblePassword,
-      //validator:
+      validator: (value) => value.isEmpty ? "Password can/'t be empty" : null,
       onSaved: (value) => _password = value.trim(),
       decoration: InputDecoration(
         hintText: 'Wachtwoord',
