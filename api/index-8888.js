@@ -25,7 +25,7 @@ const getResponse = (q) => {
   if (q == "Hello, I am Okke"){return "Hello Okke, we from Swisscom would be more than happy to help! :D";}
   else if (q == "Hello, I am Caslay"){return "Hey Caslay, how can i help you today?";}
   //else {return "Hey there, where can i assist you with today?";}
-  else {return "Hey there laurens leggo!";}
+  else {return "Hey there leggo!";}
 };
 
 const logreq = (r) => {
