@@ -7,7 +7,6 @@ class LoginWidget extends StatefulWidget {
 }
 
 
-}
 
 class _LoginWidget extends State<LoginWidget> {
   String _email, _password;
@@ -25,7 +24,7 @@ class _LoginWidget extends State<LoginWidget> {
         child: CircleAvatar(
           backgroundColor: Colors.transparent,
           radius: 48.0,
-          child: Image.asset('images/logo_logingpage.jpg'),
+          child: Image.asset('images/logo_logingpage.jpg', width: 100.0, height: 100.0),
         ),
       ),
     );
