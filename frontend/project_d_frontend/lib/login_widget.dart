@@ -17,7 +17,7 @@ class _LoginWidget extends State<LoginWidget> {
   String _errorMessage;
   bool _isLoginForm;
 
-   bool validateAndSave() {
+  bool validateAndSave() {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
@@ -29,7 +29,6 @@ class _LoginWidget extends State<LoginWidget> {
   void validateAndSubmit() async {
     setState(() {
       _errorMessage = "";
-      
     });
     if (validateAndSave()) {
       String userId = "";
@@ -58,12 +57,23 @@ class _LoginWidget extends State<LoginWidget> {
     super.initState();
   }
 
+  void resetForm() {
+    _formKey.currentState.reset();
+    _errorMessage = "";
+  }
+
+  void changeform() {
+    resetForm();
+    setState(() {
+      _isLoginForm = !_isLoginForm;
+    });
+  }
+
   Widget logo() {
     return Image(
       image: AssetImage('images/logo.png'),
       width: 325,
       height: 250,
-      
       fit: BoxFit.cover,
     );
   }
@@ -112,14 +122,13 @@ class _LoginWidget extends State<LoginWidget> {
         child: SizedBox(
           height: 40.0,
           child: new RaisedButton(
-            elevation: 5.0,
-            shape: new RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(30.0)),
-            color: Colors.red[800],
-            child: new Text(_isLoginForm ? 'Login' : 'Create account',
-                style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-            onPressed: validateAndSubmit
-          ),
+              elevation: 5.0,
+              shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(30.0)),
+              color: Colors.red[800],
+              child: new Text(_isLoginForm ? 'Login' : 'Create account',
+                  style: new TextStyle(fontSize: 20.0, color: Colors.white)),
+              onPressed: validateAndSubmit),
         ));
   }
 
@@ -131,17 +140,7 @@ class _LoginWidget extends State<LoginWidget> {
         onPressed: changeform);
   }
 
-  void resetForm() {
-    _formKey.currentState.reset();
-    _errorMessage = "";
-  }
-
-  void changeform() {
-    resetForm();
-    setState(() {
-      _isLoginForm = !_isLoginForm;
-    });
-  }
+  
 
   Widget showerror() {
     if (_errorMessage.length > 0 && _errorMessage != null) {
@@ -184,9 +183,9 @@ class _LoginWidget extends State<LoginWidget> {
   Widget build(BuildContext context) {
     return new Scaffold(
         body: Stack(
-          children: <Widget>[
-            _showForm(),
-          ],
-        ));
+      children: <Widget>[
+        _showForm(),
+      ],
+    ));
   }
 }
