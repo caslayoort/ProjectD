@@ -21,17 +21,10 @@ const responsejson = (resp) => {
   return textfulfillment;
 };
 
-const getResponse = (q) => {
-  if (q == "Hello, I am Okke"){return "Hello Okke, we from Swisscom would be more than happy to help! :D";}
-  else if (q == "Hello, I am Caslay"){return "Hey Caslay, how can i help you today?";}
-  //else {return "Hey there, where can i assist you with today?";}
-  else {return "Hey there";}
-};
-
 const logreq = (r) => {
   if (typeof r !== 'undefined' && r){
     // Creating a log in the log/requests folder with the epoch time format as name of the .log file.
-    let date = Math.floor(new Date() / 1000);
+    let date = Math.floor(new Date());
     fs.writeFile(__dirname + `/log/requests/${date}.log`, JSON.stringify(r), function (err) {
       // Throw an error if needed, otherwise log the action in log/api-req.log
       if (err) throw err;
@@ -56,10 +49,8 @@ app.post('/webhook', (req, res) => {
 
   if ( typeof data !== 'undefined' && data ){
     let question = data.queryResult.queryText;
-    let response = getResponse(question);
     
     console.log("\nQuestion:\n" + question);
-    console.log("\nAnswer:\n" + response);
 
     const timestamp = logreq(data);
     const { spawn } = require('child_process');
@@ -78,6 +69,7 @@ app.post('/webhook', (req, res) => {
     else {
       // Getting the response from the response file
       fs.readFile( __dirname + '/log/responses/' + timestamp + '.log', 'utf8', function (err, data) {
+           console.log("\nAnswer:\n" + data);
            res.send(responsejson(data));
        });
      }
