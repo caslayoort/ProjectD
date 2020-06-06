@@ -1,12 +1,9 @@
-
 import 'package:flutter/material.dart';
 
 class LoginWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => new _LoginWidget();
 }
-
-
 
 class _LoginWidget extends State<LoginWidget> {
   String _email, _password;
@@ -17,16 +14,11 @@ class _LoginWidget extends State<LoginWidget> {
   }
 
   Widget logo() {
-    return new Hero(
-      tag: 'hero',
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 70.0, 0.0, 0.0),
-        child: CircleAvatar(
-          backgroundColor: Colors.transparent,
-          radius: 48.0,
-          child: Image.asset('images/logo_logingpage.jpg', width: 100.0, height: 100.0),
-        ),
-      ),
+   return Image(
+      image: AssetImage('images/logo.png'),
+      width: 300,
+      height: 200,
+      fit: BoxFit.cover,  
     );
   }
 
@@ -95,11 +87,12 @@ class _LoginWidget extends State<LoginWidget> {
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: new AppBar(
-          title: new Text("Login demo"),
+          title: new Text("Voice assistant"),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            SizedBox(height: 50),
             logo(),
             email(),
             SizedBox(height: 10),
