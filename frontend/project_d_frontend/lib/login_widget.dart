@@ -15,26 +15,19 @@ class LoginWidget extends StatefulWidget {
 //     return null;
 //   }
 
-
-
-
-
 class _LoginWidget extends State<LoginWidget> {
   String _email, _password;
+  bool _isLoginForm = true;
 
   void check() {
     print('Pressed button');
   }
-
-
 
   Widget email() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 100.0, 0.0, 0.0),
       child: TextFormField(
         keyboardType: TextInputType.emailAddress,
-        validator: (value) => value.isEmpty ? "Email can/'t be empty" : null,
-        onSaved: (value) => _email = value.trim(),
         decoration: InputDecoration(
           hintText: 'Email',
           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -47,6 +40,8 @@ class _LoginWidget extends State<LoginWidget> {
             borderSide: BorderSide(color: Colors.grey),
           ),
         ),
+        validator: (value) => value.isEmpty ? "Email can/'t be empty" : null,
+        onSaved: (value) => _email = value.trim(),
       ),
     );
   }
@@ -54,8 +49,7 @@ class _LoginWidget extends State<LoginWidget> {
   Widget password() {
     return TextFormField(
       keyboardType: TextInputType.visiblePassword,
-      validator: (value) => value.isEmpty ? "Password can/'t be empty" : null,
-      onSaved: (value) => _password = value.trim(),
+      obscureText: true,
       decoration: InputDecoration(
         hintText: 'Wachtwoord',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -68,26 +62,26 @@ class _LoginWidget extends State<LoginWidget> {
           borderSide: BorderSide(color: Colors.grey),
         ),
       ),
+      validator: (value) => value.isEmpty ? "Password can/'t be empty" : null,
+      onSaved: (value) => _password = value.trim(),
     );
   }
 
   Widget loginbutton() {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 16.0),
-      child: RaisedButton(
-        onPressed: check,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        padding: EdgeInsets.all(12),
-        color: Colors.blue,
-        child: Text(
-          'Log In',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+    return new Padding(
+        padding: EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
+        child: SizedBox(
+          height: 40.0,
+          child: new RaisedButton(
+            elevation: 5.0,
+            shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(30.0)),
+            color: Colors.blue,
+            child: new Text(_isLoginForm ? 'Login' : 'Create account',
+                style: new TextStyle(fontSize: 20.0, color: Colors.white)),
+            onPressed: check, //validateAndSubmit
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   @override
