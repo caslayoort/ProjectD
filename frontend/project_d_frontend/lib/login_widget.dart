@@ -1,19 +1,12 @@
-// import 'package:email_validator/email_validator.dart';
+
 import 'package:flutter/material.dart';
 
-//https://flutter.dev/docs/cookbook/forms/validation
 class LoginWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => new _LoginWidget();
 }
 
-// class EmailValidator {
-//   static String validate(String value) {
-//     if (value.isEmpty){
-//       return "dit veld mag niet leeg zijn";
-//     }
-//     return null;
-//   }
+
 
 class _LoginWidget extends State<LoginWidget> {
   String _email, _password;
@@ -21,6 +14,20 @@ class _LoginWidget extends State<LoginWidget> {
 
   void check() {
     print('Pressed button');
+  }
+
+  Widget logo() {
+    return new Hero(
+      tag: 'hero',
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(0.0, 70.0, 0.0, 0.0),
+        child: CircleAvatar(
+          backgroundColor: Colors.transparent,
+          radius: 48.0,
+          child: Image.asset('images/logo_logingpage.jpg'),
+        ),
+      ),
+    );
   }
 
   Widget email() {
@@ -93,6 +100,7 @@ class _LoginWidget extends State<LoginWidget> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            logo(),
             email(),
             SizedBox(height: 10),
             password(),
