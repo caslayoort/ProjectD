@@ -6,18 +6,6 @@ class LoginWidget extends StatefulWidget {
   State<StatefulWidget> createState() => new _LoginWidget();
 }
 
-<<<<<<< HEAD
-=======
-class EmailValidator {
-  static String validate(String value) {
-    if (value.isEmpty){
-      return "dit veld mag niet leeg zijn";
-    }
-    return null;
-  }
-
-
->>>>>>> parent of 6c8da54... try other validator
 
 }
 
@@ -48,11 +36,6 @@ class _LoginWidget extends State<LoginWidget> {
       padding: const EdgeInsets.fromLTRB(0.0, 100.0, 0.0, 0.0),
       child: TextFormField(
         keyboardType: TextInputType.emailAddress,
-<<<<<<< HEAD
-=======
-        validator: EmailValidator.validate,
-        onSaved: (value) => _email = value.trim(),
->>>>>>> parent of 6c8da54... try other validator
         decoration: InputDecoration(
           hintText: 'Email',
           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -74,12 +57,7 @@ class _LoginWidget extends State<LoginWidget> {
   Widget password() {
     return TextFormField(
       keyboardType: TextInputType.visiblePassword,
-<<<<<<< HEAD
       obscureText: true,
-=======
-      //validator:
-      onSaved: (value) => _password = value.trim(),
->>>>>>> parent of 6c8da54... try other validator
       decoration: InputDecoration(
         hintText: 'Wachtwoord',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
