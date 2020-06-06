@@ -2,9 +2,9 @@ const bodyparser = require('body-parser');
 const express = require('express');
 const glob = require('glob');
 const fs = require('fs');
+
 const app = express();
 const port = 8888;
-
 const DEBUG = true;
 
 app.use(bodyparser.json());
@@ -37,27 +37,53 @@ const logreq = (r) => {
       if (err) throw err;
       else {fs.appendFile(__dirname + '/log/api-req.log', `Request ${date} is logged.`, function (err) {if (err) throw err;});}
     });
+
+    return date;
   }
 };
 
-
 app.post('/webhook', (req, res) => {
+  function sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+  }
+
   var data = req.body;
 
   console.log("\nRequest:");
   console.log(data);
 
   if ( typeof data !== 'undefined' && data ){
-    logreq(data);
     let question = data.queryResult.queryText;
     let response = getResponse(question);
     
     console.log("\nQuestion:\n" + question);
     console.log("\nAnswer:\n" + response);
+
+    const timestamp = logreq(data);
+    const { spawn } = require('child_process');
     
-    res.send(responsejson(response));
+    // spawns a subproces that takes the timestamp of the request and the current directory to get the request file that is created.
+    const child = spawn(__dirname + '/python/main.py', [`${timestamp}`, __dirname]);
+
+    // create a period of time for the sub process to run to avoid returning "undefined" as our result.
+    let waitForIt = sleep(1000);
+    waitForIt.then(function(){
+      
+    if(child.error) {
+      console.log(child.error);
+      res.send("Something went wrong! Please try again.")
+    }
+    else {
+      // Getting the response from the response file
+      fs.readFile( __dirname + '/log/responses/' + timestamp + '.log', 'utf8', function (err, data) {
+           res.send(responsejson(data));
+       });
+     }
+    });
   } else {
-    res.send("{}");
+    res.send(responsejson("Something went wong! please try again."));
   }
 
 });
@@ -67,9 +93,12 @@ app.get('/webhook', (req, res) => {
     .map(name => ({name, ctime: fs.statSync(name).ctime}))
     .sort((a, b) => b.ctime - a.ctime)[0].name;
   fs.readFile( newestFile, 'utf8', function (err, data) {
-    if (DEBUG == true){res.send(data);}
+    if (DEBUG == true){
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.parse(data));
+    }
     else {res.send("Error 404.");}
-   });;
+   });
 });
 
 var server = app.listen(port, () => {
@@ -80,4 +109,3 @@ var server = app.listen(port, () => {
   console.log("api running on " + host + ":" + port);
 
 });
-
