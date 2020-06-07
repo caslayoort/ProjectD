@@ -1,6 +1,6 @@
-def recommend(answerJson):
+def recommendPhone(answerJson):
     return answerJson
 
 def gotoRecommendation(answer):
-    return recommend(answer)
+    return recommendPhone(answer)
 

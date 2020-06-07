@@ -2,6 +2,13 @@
 import sys
 import json
 import sys
+import re
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+
+cred = credentials.Certificate("./firebase.json")
+firebase_admin.initialize_app(cred)
 
 sys.path.append('./phone.py')
 sys.path.append('./subscription.py')
@@ -13,21 +20,39 @@ import nltk
 nltk.download('stopwords')
 from nltk.corpus import stopwords
 
+def hours(intent):
+    if intent.lower() == "hour" or intent.lower() == "hours":
+        return "Our store is open from 9am till 5pm."
+
 def getResponse(intent, question, defaultAnswer, endOfConversation):
     en_stops = set(stopwords.words('english'))
     all_words = list(question.split(" "))
-    filteredQuestion = ""
+    filteredQuestion_raw = ""
     for word in all_words: 
         if word not in en_stops:
-            filteredQuestion = filteredQuestion + " " + word
+            filteredQuestion_raw = filteredQuestion_raw + " " + word.lower()
 
-    PhoneAnswer = phone.checkIfPhone(intent, question)
+    def unique_list(l):
+        ulist = []
+        [ulist.append(x) for x in l if x not in ulist]
+        return ulist
+
+    filteredQuestion_raw2 = ' '.join(unique_list(filteredQuestion_raw.split()))
+    filteredQuestion = re.sub(r"[^a-zA-Z0-9]+", ' ', filteredQuestion_raw2)
+
+    HourAnswer = hours(intent)
+    if HourAnswer:
+        return HourAnswer
+
+    PhoneAnswer = phone.checkIfPhone(intent, filteredQuestion)
     if PhoneAnswer:
         return PhoneAnswer
-    subscriptionAnswer = sub.checkIfSubscription(intent, question)
-    if subscriptionAnswer:
-        return subscriptionAnswer
-    return(defaultAnswer)
+
+    SubscriptionAnswer = sub.checkIfSubscription(intent, filteredQuestion)
+    if SubscriptionAnswer:
+        return SubscriptionAnswer
+
+    return defaultAnswer
 
 if __name__ == "__main__":
     timestamp = str(sys.argv[1])
@@ -44,6 +69,13 @@ if __name__ == "__main__":
     defaultAnswer = myjson["queryResult"]["fulfillmentText"]
     intentName = myjson["queryResult"]["intent"]["displayName"]
     endOfConversation = myjson["queryResult"]["intent"]["displayName"]
+
+    ## Manual testing
+    # question = "Does a oneplus6 has a camera? And how much does it cost?"
+    # question = "I want a subscription plan with unlimited data."
+    # defaultAnswer = "Sorry, could you repeat?"
+    # intentName = "test"
+    # endOfConversation = "yes"
 
     answer = getResponse(intentName, question, defaultAnswer, endOfConversation)
 
