@@ -5,11 +5,18 @@ const fs = require('fs');
 const app = express();
 const port = 8888;
 const DEBUG = true;
-global.globalDate;
-global.OutputContexts;
-global.temp;
 
 
+
+global.parameters;
+global.outputcontexts;
+global.action;
+global.fulfillmentmessages;
+
+global.localparameters;
+global.localoutputcontexts;
+global.localaction;
+global.localfulfillmentMessages
 
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
@@ -21,50 +28,53 @@ app.use((req, res, next) => {
 })
 
 
-
 const responsejson = (resp) => {
-  if ( typeof global.globalDate != 'undefined'){
-    console.log("-------------------------------------------------------------------------------");
-    console.log(global.globalDate);
-    console.log(typeof global.globalDate);
-    console.log(global.globalDate.toString);
-    textfulfillment = '{"parameters": "' + global.globalDate.toString() + '", "fulfillmentText": "' + resp + '", "fulfillmentMessages": [{ "text": { "text": [ "' + resp + '" ] } } ] }';  
+  let textfulfillment = '{"fulfillmentText": "' + resp + '"'
+  if ( typeof global.parameters != 'undefined'){
+      textfulfillment = textfulfillment+ ', "parameters": ['
+      textfulfillment = textfulfillment + JSON.stringify(global.parameters);
+      textfulfillment = textfulfillment + ']';
   }
-  else
-  {
-    textfulfillment = '{ "parameters": "' + "dosomething" + '"   , "fulfillmentText": "' + resp + '", "fulfillmentMessages": [{ "text": { "text": [ "' +       resp + '" ] } } ] }';  
+  if ( typeof global.fulfillmentmessages != 'undefined'){
+      textfulfillment = textfulfillment+ ', "fulfillmentMessages": ['
+      textfulfillment = textfulfillment + JSON.stringify(global.fulfillmentmessages);
+      textfulfillment = textfulfillment + ']';
   }
+  
+  textfulfillment =textfulfillment + ', "queryText": "' + "lukt" + '"' + '}';
   return textfulfillment;
 };
        
-function webhook(q,action,param) {
+function webhook() {
   var date = new Date();
-  global.globalDate  = { leggo: date.toJSON()};
-  global.temp =  { leggo: date.toJSON()};
+  global.parameters  = { leggo: date.toJSON()};
+  global.temp  = { leggo: date.toJSON()};
+  global.localparameters = global.parameters
   return "works ";
 }        
       
 function webhookfollowup() {
-  global.globalDate  = { leggo:global.temp["leggo"]};
-  return  "date : " + Math.floor(new Date(global.temp["leggo"]));
+  global.fulfillmentmessages  = { datedate: new Date(global.localparameters["leggo"])};
+  return  "date : " +  new Date(global.localparameters["leggo"]).toString();
  
 }        
-function dothis2(q,action,param) {
-    if ( typeof global.globalDate != 'undefined'){
-        global.globalDate  = { datedate: global.globalDate["datedate"]};
-        return new Date(global.globalDate["datedate"]).toString();
+function appointmentfollowup() {
+    if ( typeof global.parameters != 'undefined'){
+        global.fulfillmentmessages  = { datedate: global.parameters["datedate"]};
+        return new Date(global.parameters["datedate"]).toString();
     }
+   
     else {
-    "please try again"
+    return "please try again"
     }
 }   
-function dothis(q,action,param) {
+function appointment() {
     var list = [];
     var answer = '';
     var date = new Date();
-     for (var key in param) {
+     for (var key in global.parameters) {
          if(key == 'otherdays' ){
-             let temp  = param[key];
+             let temp  = global.parameters[key];
              if(temp  ==  'tomorow' ){
                date.setDate(date.getDate() + 1);
                
@@ -72,9 +82,9 @@ function dothis(q,action,param) {
                 date.setDate(date.getDate() + 7);
              }
          }
-         else if(key == 'days' && param[key] != ''){
+         else if(key == 'days' && global.parameters[key] != ''){
            var a = 0;
-           var b = param[key];
+           var b = global.parameters[key];
            
            switch(b) {
                 case "monday" || "Monday": 
@@ -113,13 +123,13 @@ function dothis(q,action,param) {
             }
          }
          else if(key = 'time'){
-           if(param[key] < 18 && param[key] >8 ){
-             date.setHours(param[key]);  
+           if(global.parameters[key] < 18 && global.parameters[key] >8 ){
+             date.setHours(global.parameters[key]);  
              date.setMinutes(0);  
              date.setSeconds(0);
            } 
-           else if(param[key] < 5){
-             date.setHours(param[key] +12);  
+           else if(global.parameters[key] < 5){
+             date.setHours(global.parameters[key] +12);  
              date.setMinutes(0);  
              date.setSeconds(0);
            }
@@ -128,46 +138,38 @@ function dothis(q,action,param) {
       
     }
     //{ "name":"John", "age":30, "car":null }
-    global.globalDate = { datedate: date.toJSON()};
+    global.parameters = { datedate: date.toJSON()};
     return  String(date);
 }
 
-const getResponse = (q,action,param) => {
-  if ( typeof action !== 'undefined'){
+const getResponse = () => {
+  if ( typeof global.action != 'undefined'){
      switch(action) {
         case "webhookdo": 
-          return webhook(q,action,param)
+          return webhook()
           break;
         case "webhookdoagain": 
           return webhookfollowup()
           break;
         case "appointment.appointment-yes.appointment-yes-custom": 
-          return 'Confirm this appointment: '+ dothis(q,action,param);
+          return 'Confirm this appointment: '+ appointment();
           break;
          case "finalappointment": 
-          return 'great we will see you on: '+ dothis2(q,action,param);
+          return 'great we will see you on: '+ appointmentfollowup();
           break;
         default: 
           return "Didn't quite get that. Please try again."
       }
     }  
-  if (q == "Hello, I am Okke"){return "Hello Okke, we from Swisscom would be more than happy to help! :D";}
-  else if (q == "Hello, I am Caslay"){return "Hey Caslay, how can i help you today?";}
-  else if (q == "location"){return "let me calculate that for you";}
-  else if (q == "closest store"){return "the closest one is...";}
-  else {return "Hey there leggo!";}
-};
-
-const logreq = (r) => {
-  if (typeof r !== 'undefined' && r){
-    // Creating a log in the log/requests folder with the epoch time format as name of the .log file.
-    let date = Math.floor(new Date());
-    fs.writeFile(__dirname + `/log/requests/${date}.log`, JSON.stringify(r), function (err) {
-      // Throw an error if needed, otherwise log the action in log/api-req.log
-      if (err) throw err;
-      else {fs.appendFile(__dirname + '/log/api-req.log', `Request ${date} is logged.`, function (err) {if (err)   throw err;});}
-    });
+  else if(typeof global.question != 'undefined'){
+      q = global.question;
+      if (q == "Hello, I am Okke"){return "Hello Okke, we from Swisscom would be more than happy to help! :D";}
+      else if (q == "Hello, I am Caslay"){return "Hey Caslay, how can i help you today?";}
+      else if (q == "location"){return "let me calculate that for you";}
+      else if (q == "closest store"){return "the closest one is...";}
+      else {return "Hey there leggo!";}
   }
+  return "hello"
 };
 
 app.post('/webhook', (req, res) => {
@@ -177,18 +179,17 @@ app.post('/webhook', (req, res) => {
   console.log(data);
 
   if ( typeof data !== 'undefined' && data ){
-    logreq(data);
-    let action = data.queryResult.action
-    let question = data.queryResult.queryText;
-    let param = data.queryResult.parameters;
-    let outputcontexts =  data.queryResult.outputContexts;
-    global.OutputContexts =  outputcontexts;
     
+    global.action = data.queryResult.action
+    global.question = data.queryResult.queryText;
+    global.parameters = data.queryResult.parameters;
+    global.outputcontexts =  data.queryResult.outputContexts;
+     global.fulfillmentmessages = data.queryResult.fulfillmentmessages;
     
-    let response = getResponse(question,action,param);
+    let response = getResponse();
      
-    console.log("\nParameters After:\n" +  JSON.stringify(global.globalDate));
-    console.log("\n" +responsejson(response))
+    console.log("\nParameters After:\n" +  JSON.stringify(global.parameters));
+    console.log("\nResponse: " +responsejson(response))
     res.send(responsejson(response))
   } else {
     res.send("{}");
@@ -196,16 +197,6 @@ app.post('/webhook', (req, res) => {
 
 });
 
-
-app.get('/webhook', (req, res) => {
-  let newestFile = glob.sync(__dirname + '/log/requests/*')
-    .map(name => ({name, ctime: fs.statSync(name).ctime}))
-    .sort((a, b) => b.ctime - a.ctime)[0].name;
-  fs.readFile( newestFile, 'utf8', function (err, data) {
-    if (DEBUG == true){res.send(data);}
-    else {res.send("Error 404.");}
-   });;
-});
 
 var server = app.listen(port, () => {
 
@@ -215,6 +206,3 @@ var server = app.listen(port, () => {
   console.log("api running on " + host + ":" + port);
 
 });
-
-
-
