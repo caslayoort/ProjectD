@@ -4,14 +4,21 @@ import 'package:project_d_frontend/Setup/auth.dart';
 class LoginWidget extends StatefulWidget {
   LoginWidget({this.auth});
 
-  final BaseAuth auth;
+  BaseAuth auth;
+  
+
 
   @override
-  State<StatefulWidget> createState() => new _LoginWidget();
+  _LoginWidget createState() => new _LoginWidget();
+    
 }
 
 class _LoginWidget extends State<LoginWidget> {
+    
+  
   final _formKey = new GlobalKey<FormState>();
+
+  
 
   String _email, _password;
   String _errorMessage;
@@ -42,10 +49,10 @@ class _LoginWidget extends State<LoginWidget> {
         }
       } catch (e) {
         print('Error: $e');
-        setState(() {
-          _errorMessage = e.message;
-          _formKey.currentState.reset();
-        });
+        //   setState(() {
+        //     _errorMessage = e.message;
+        //     _formKey.currentState.reset();
+        //   });
       }
     }
   }
@@ -120,16 +127,16 @@ class _LoginWidget extends State<LoginWidget> {
     return new Padding(
         padding: EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
         child: SizedBox(
-          height: 40.0,
-          child: new RaisedButton(
+            height: 40.0,
+            child: new RaisedButton(
               elevation: 5.0,
               shape: new RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(30.0)),
               color: Colors.red[800],
               child: new Text(_isLoginForm ? 'Login' : 'Create account',
                   style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-              onPressed: validateAndSubmit),
-        ));
+              onPressed: validateAndSubmit,
+            )));
   }
 
   Widget loginbutton() {
@@ -139,8 +146,6 @@ class _LoginWidget extends State<LoginWidget> {
             style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
         onPressed: changeform);
   }
-
-  
 
   Widget showerror() {
     if (_errorMessage.length > 0 && _errorMessage != null) {
