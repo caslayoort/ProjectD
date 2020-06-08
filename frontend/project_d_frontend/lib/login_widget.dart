@@ -4,7 +4,7 @@ import 'package:project_d_frontend/Setup/auth.dart';
 class LoginWidget extends StatefulWidget {
   LoginWidget({this.auth});
 
-  BaseAuth auth;
+  final BaseAuth auth;
   
 
 
@@ -40,6 +40,7 @@ class _LoginWidget extends State<LoginWidget> {
     if (validateAndSave()) {
       String userId = "";
       try {
+        
         if (_isLoginForm) {
           userId = await widget.auth.signIn(_email, _password);
           print('Signed in: $userId');
@@ -49,6 +50,7 @@ class _LoginWidget extends State<LoginWidget> {
         }
       } catch (e) {
         print('Error: $e');
+        
         //   setState(() {
         //     _errorMessage = e.message;
         //     _formKey.currentState.reset();
@@ -61,6 +63,7 @@ class _LoginWidget extends State<LoginWidget> {
   void initState() {
     _errorMessage = "";
     _isLoginForm = true;
+    
     super.initState();
   }
 
