@@ -1,24 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:project_d_frontend/Setup/auth.dart';
+import 'package:project_d_frontend/home_page.dart';
 
 class LoginWidget extends StatefulWidget {
   LoginWidget({this.auth});
 
   final BaseAuth auth;
-  
-
 
   @override
   _LoginWidget createState() => new _LoginWidget();
-    
 }
 
 class _LoginWidget extends State<LoginWidget> {
-    
-  
   final _formKey = new GlobalKey<FormState>();
-
-  
 
   String _email, _password;
   String _errorMessage;
@@ -40,21 +34,22 @@ class _LoginWidget extends State<LoginWidget> {
     if (validateAndSave()) {
       String userId = "";
       try {
-        
         if (_isLoginForm) {
           userId = await widget.auth.signIn(_email, _password);
           print('Signed in: $userId');
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => HomePage()));
         } else {
           userId = await widget.auth.signUp(_email, _password);
           print('Signed up user: $userId');
         }
       } catch (e) {
         print('Error: $e');
-        
-        //   setState(() {
-        //     _errorMessage = e.message;
-        //     _formKey.currentState.reset();
-        //   });
+
+        setState(() {
+          _errorMessage = e.message;
+          _formKey.currentState.reset();
+        });
       }
     }
   }
@@ -63,7 +58,7 @@ class _LoginWidget extends State<LoginWidget> {
   void initState() {
     _errorMessage = "";
     _isLoginForm = true;
-    
+
     super.initState();
   }
 
