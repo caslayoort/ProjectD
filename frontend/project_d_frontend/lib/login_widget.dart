@@ -42,6 +42,8 @@ class _LoginWidget extends State<LoginWidget> {
         } else {
           userId = await widget.auth.signUp(_email, _password);
           print('Signed up user: $userId');
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => HomePage()));
         }
       } catch (e) {
         print('Error: $e');
