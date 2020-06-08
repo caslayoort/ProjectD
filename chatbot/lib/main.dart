@@ -2,7 +2,7 @@ import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'dart:convert';
 
 void main() => runApp(new MyApp());
 
@@ -79,31 +79,68 @@ class _HomePageDialogflow extends State<HomePageDialogflow> {
         _messages.insert(0, message);
       });
       if(message.text == 'let me calculate that for you'){
-
           _launchURL();
       }
-      response.queryResult.parameters.forEach((key, value) {
-        if (key == 'datedate' ) {
-          var setMessage = value;
-        }
-      });
-      if(message.text.contains("great we will see you on:") ) {
+
+      if(message.text.contains("great we will see you on: ") ) {
         var temp = message.text.replaceAll("great we will see you on:", "");
 
-        DateTime theSameDate = new DateTime(temp);
-        DateTime date2 = theSameDate.add(Duration(hours: 1));
-        _launchEvent(theSameDate, date2);
+        var temp2 = temp.split(" ");
+        var day = temp2[1];
+        var answerday;
+        switch(day) {
+          case "Mon": {answerday = 1;} break;
+          case "Tue": {answerday = 2;} break;
+          case "Wed": {answerday = 3;}  break;
+          case "Thu": {answerday = 4;}  break;
+          case "Fri": {answerday = 5;}  break;
+          case "Sat": {answerday = 6;}  break;
+          case "Sun": {answerday = 7;}  break;
+          default: {answerday = 0;}break;
+        }
+        String month = temp2[2];
+        var answermonth;
+        switch(month) {
+          case "Jan": {answermonth = "01";} break;
+          case "Feb": {answermonth = "02";} break;
+          case "Mar": {answermonth = "03";}  break;
+          case "Apr": {answermonth = "04";}  break;
+          case "May": {answermonth = "05";}  break;
+          case "Jun": {answermonth = "06";}  break;
+          default: {answermonth = 0;}break;
+        }
+        var year = temp2[4];
+        var hour = temp2[5];
+
+        //"2012-02-27 13:27:00"
+        hour = hour.toString();
+        String hour2 =hour.substring(0, hour.indexOf(':'));
+        var hour3 = int.parse(hour2) ;
+        if(hour3 <10){
+          hour2 ="0" +hour3.toString() + ":00:00.000";
+        }else {
+          hour2 =hour3.toString() + ":00:00.000";
+        }
+
+        String date = year +"-" +answermonth + "-0" + answerday.toString() + " " + hour.toString();
+        String date2 = year +"-" +answermonth + "-0" + answerday.toString() + " " + hour2;
+        var time = DateTime.parse(date);
+        var time2 = DateTime.parse(date2);
+
+
+        var answer = time.toString();
+        var answer2 = time2.toString();
+
       }
     }
-
 
   _launchEvent(date,date2) async {
     final Event event = Event(
       title: 'Event title',
       description: 'Event description',
       location: 'Event location',
-      startDate: DateTime(date),
-      endDate: DateTime(date2),
+      startDate: DateTime.parse(date),
+      endDate: DateTime.parse(date2)
     );
 
     Add2Calendar.addEvent2Cal(event);
