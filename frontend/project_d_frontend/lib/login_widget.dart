@@ -14,11 +14,12 @@ class LoginWidget extends StatefulWidget {
 class _LoginWidget extends State<LoginWidget> {
   final _formKey = new GlobalKey<FormState>();
 
-  String _email, _password;
-  String _errorMessage;
-  bool _isLoginForm;
+  String _email;
+  String _password;
+  bool signin;
+  bool _obscureText;
 
-  bool validateAndSave() {
+  bool validateInput() {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
@@ -27,29 +28,24 @@ class _LoginWidget extends State<LoginWidget> {
     return false;
   }
 
-  void validateAndSubmit() async {
-    setState(() {
-      _errorMessage = "";
-    });
-    if (validateAndSave()) {
-      String userId = "";
+  void submit() async {
+    if (validateInput()) {
+      String uId = "";
       try {
-        if (_isLoginForm) {
-          userId = await widget.auth.signIn(_email, _password);
-          print('Signed in: $userId');
+        if (signin) {
+          uId = await widget.auth.signIn(_email, _password);
+          print('Signed in: $uId');
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => HomePage()));
         } else {
-          userId = await widget.auth.signUp(_email, _password);
-          print('Signed up user: $userId');
+          uId = await widget.auth.signUp(_email, _password);
+          print('Signed up user: $uId');
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => HomePage()));
         }
       } catch (e) {
         print('Error: $e');
-
         setState(() {
-          _errorMessage = e.message;
           _formKey.currentState.reset();
         });
       }
@@ -58,139 +54,114 @@ class _LoginWidget extends State<LoginWidget> {
 
   @override
   void initState() {
-    _errorMessage = "";
-    _isLoginForm = true;
-
+    signin = true;
+    _obscureText = true;
     super.initState();
   }
-
-  void resetForm() {
-    _formKey.currentState.reset();
-    _errorMessage = "";
-  }
-
+ 
   void changeform() {
-    resetForm();
     setState(() {
-      _isLoginForm = !_isLoginForm;
+      signin = !signin;
     });
   }
 
-  Widget logo() {
-    return Image(
-      image: AssetImage('images/logo.png'),
-      width: 325,
-      height: 250,
-      fit: BoxFit.cover,
-    );
+  void changeVisibility() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
   }
 
-  Widget email() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 100.0, 0.0, 0.0),
-      child: new TextFormField(
-        maxLines: 1,
-        keyboardType: TextInputType.emailAddress,
-        autofocus: false,
-        decoration: new InputDecoration(
-            hintText: 'Email',
-            icon: new Icon(
-              Icons.mail,
-              color: Colors.blue[900],
-            )),
-        validator: (value) => value.isEmpty ? 'Email can\'t be empty' : null,
-        onSaved: (value) => _email = value.trim(),
-      ),
-    );
-  }
-
-  Widget password() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
-      child: new TextFormField(
-        maxLines: 1,
-        obscureText: true,
-        autofocus: false,
-        decoration: new InputDecoration(
-            hintText: 'Password',
-            icon: new Icon(
-              Icons.lock,
-              color: Colors.red[900],
-            )),
-        validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
-        onSaved: (value) => _password = value.trim(),
-      ),
-    );
-  }
-
-  Widget signupbutton() {
+  Widget login() {
     return new Padding(
         padding: EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
         child: SizedBox(
-            height: 40.0,
+            height: 45.0,
             child: new RaisedButton(
               elevation: 5.0,
               shape: new RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(30.0)),
               color: Colors.red[800],
-              child: new Text(_isLoginForm ? 'Login' : 'Create account',
-                  style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-              onPressed: validateAndSubmit,
+              child: new Text(signin ? 'Login' : 'Create account',
+                  style: new TextStyle(fontSize: 22.0, color: Colors.white)),
+              onPressed: submit,
             )));
   }
 
-  Widget loginbutton() {
+  Widget createAccount() {
     return new FlatButton(
         child: new Text(
-            _isLoginForm ? 'Create an account' : 'Have an account? Sign in',
-            style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
+            signin ? 'Create an account' : 'Have an account? Sign in',
+            style: new TextStyle(fontSize: 20.0, fontWeight: FontWeight.w300)),
         onPressed: changeform);
-  }
-
-  Widget showerror() {
-    if (_errorMessage.length > 0 && _errorMessage != null) {
-      return new Text(
-        _errorMessage,
-        style: TextStyle(
-            fontSize: 13.0,
-            color: Colors.red,
-            height: 1.0,
-            fontWeight: FontWeight.w300),
-      );
-    } else {
-      return new Container(
-        height: 0.0,
-      );
-    }
-  }
-
-  Widget _showForm() {
-    return new Container(
-        padding: EdgeInsets.all(16.0),
-        child: new Form(
-          key: _formKey,
-          child: new ListView(
-            shrinkWrap: true,
-            children: <Widget>[
-              SizedBox(height: 10),
-              logo(),
-              email(),
-              password(),
-              signupbutton(),
-              loginbutton(),
-              showerror()
-            ],
-          ),
-        ));
   }
 
   @override
   Widget build(BuildContext context) {
+    final image = Image(
+      image: AssetImage('images/logo.png'),
+      width: 325,
+      height: 250,
+      fit: BoxFit.cover,
+    );
+
+    final email = Padding(
+      padding: const EdgeInsets.fromLTRB(0.0, 75.0, 0.0, 0.0),
+      child: new TextFormField(
+        validator: (value) => value.isEmpty ? 'Email can\'t be empty' : null,
+        onSaved: (value) => _email = value.trim(),
+        keyboardType: TextInputType.emailAddress,
+        autofocus: false,
+        decoration: InputDecoration(
+          hintText: 'Email',
+          icon: new Icon(
+            Icons.mail,
+            color: Colors.blue[900],
+          ),
+        ),
+      ),
+    );
+
+    final password = Padding(
+      padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
+      child: new TextFormField(
+        validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
+        onSaved: (value) => _password = value.trim(),
+        keyboardType: TextInputType.visiblePassword,
+        obscureText: _obscureText,
+        autofocus: false,
+        decoration: new InputDecoration(
+          hintText: 'Password',
+          icon: new Icon(
+            Icons.lock,
+            color: Colors.red[900],
+          ),
+          suffixIcon: IconButton(
+          icon: Icon(
+            _obscureText ? Icons.visibility : Icons.visibility_off,
+            color: Colors.blue[900],
+          ),
+          onPressed: changeVisibility,
+        ),
+        ),
+      ),
+    );
+
     return new Scaffold(
-        body: Stack(
-      children: <Widget>[
-        _showForm(),
-      ],
-    ));
+        body: new Container(
+            padding: EdgeInsets.all(15.0),
+            child: new Form(
+              key: _formKey,
+              child: new ListView(
+                shrinkWrap: true,
+                children: <Widget>[
+                  SizedBox(height: 10),
+                  image,
+                  email,
+                  password,
+                  login(),
+                  createAccount(),
+                ],
+              ),
+            )));
   }
 }
