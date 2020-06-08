@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "973312595086",
+    "firebase_url": "https://mobile-accounts-weqiub.firebaseio.com",
+    "project_id": "mobile-accounts-weqiub",
+    "storage_bucket": "mobile-accounts-weqiub.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:973312595086:android:8f38305bd2585270c4a5df",
+        "android_client_info": {
+          "package_name": "com.example.project_d_frontend"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "973312595086-tkmi7qn2s04vo9epleqc0q01c6tt8ae5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-VqNYoKEdxt5hG5NqZ4WgFvr7j1gLz5U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "973312595086-tkmi7qn2s04vo9epleqc0q01c6tt8ae5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
