@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_d_frontend/Setup/auth.dart';
 import 'package:project_d_frontend/home_page.dart';
+import 'library.dart' as globals;
 
 class LoginWidget extends StatefulWidget {
   LoginWidget({this.auth});
@@ -34,11 +35,13 @@ class _LoginWidget extends State<LoginWidget> {
       try {
         if (signin) {
           uId = await widget.auth.signIn(_email, _password);
+          globals.userid = uId;
           print('Signed in: $uId');
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => HomePage()));
         } else {
           uId = await widget.auth.signUp(_email, _password);
+          globals.userid = uId;
           print('Signed up user: $uId');
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => HomePage()));
