@@ -36,12 +36,12 @@ class _LoginWidget extends State<LoginWidget> {
           uId = await widget.auth.signIn(_email, _password);
           print('Signed in: $uId');
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => HomePageDialogflow()));
+              context, MaterialPageRoute(builder: (context) => HomePage()));
         } else {
           uId = await widget.auth.signUp(_email, _password);
           print('Signed up user: $uId');
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => HomePageDialogflow()));
+              context, MaterialPageRoute(builder: (context) => HomePage()));
         }
       } catch (e) {
         print('Error: $e');
