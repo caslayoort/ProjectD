@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:project_d_frontend/login_widget.dart';
+import 'package:project_d_frontend/Setup/auth.dart';
 import 'dart:convert';
 
 
@@ -10,6 +12,10 @@ class HomePageDialogflow extends StatefulWidget {
 
   final String title;
 
+  get auth => null;
+  
+  
+
   @override
   _HomePageDialogflow createState() => new _HomePageDialogflow();
 }
@@ -17,6 +23,8 @@ class HomePageDialogflow extends StatefulWidget {
 class _HomePageDialogflow extends State<HomePageDialogflow> {
   final List<ChatMessage> _messages = <ChatMessage>[];
   final TextEditingController _textController = new TextEditingController();
+
+  
 
   Widget _buildTextComposer() {
     return new IconTheme(
@@ -52,6 +60,7 @@ class _HomePageDialogflow extends State<HomePageDialogflow> {
           .build();
       Dialogflow dialogflow = Dialogflow(authGoogle: authGoogle, language: Language.english);
       AIResponse response = await dialogflow.detectIntent(query);
+      
 
       ChatMessage message = new ChatMessage(
 
@@ -186,6 +195,7 @@ class ChatMessage extends StatelessWidget {
   final String text;
   final String name;
   final bool type;
+
 
   List<Widget> otherMessage(context) {
     return <Widget>[

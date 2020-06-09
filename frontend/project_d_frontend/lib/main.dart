@@ -12,8 +12,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      home: new HomePageDialogflow()
-      //new LoginWidget(auth: new Auth(),)
+      home: new HomePageDialogflow(),
+      
+      //new LoginWidget(auth: new Auth()
+      
     );
   }
 }
