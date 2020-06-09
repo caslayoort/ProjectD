@@ -145,7 +145,7 @@ class _LoginWidget extends State<LoginWidget> {
     final password = Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
       child: new TextFormField(
-        validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
+        //validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
         onSaved: (value) => _password = value.trim(),
         keyboardType: TextInputType.visiblePassword,
         obscureText: _obscureText,
