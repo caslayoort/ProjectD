@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'chatbot.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:project_d_frontend/Setup/auth.dart';
+import 'package:project_d_frontend/login_widget.dart';
 
 class HomePage extends StatefulWidget {
+  HomePage({this.auth});
+
+  final BaseAuth auth;
+
   @override
   _HomePage createState() => new _HomePage();
 }
@@ -9,7 +16,7 @@ class HomePage extends StatefulWidget {
 class _HomePage extends State<HomePage> {
   Widget goToChatbot() {
     return new Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 200.0, 0.0, 0.0),
+        padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
         child: SizedBox(
             height: 45.0,
             child: new RaisedButton(
@@ -28,12 +35,50 @@ class _HomePage extends State<HomePage> {
                 })));
   }
 
+  void signOut() async {
+    try {
+      await widget.auth.signOut();
+      print("Succesful logout");
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Widget logOut() {
+    return new Padding(
+        padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+        child: SizedBox(
+            height: 45.0,
+            child: new RaisedButton(
+                elevation: 5.0,
+                shape: new RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.circular(30.0)),
+                color: Colors.red[800],
+                child: new Text('Log out',
+                    style: new TextStyle(fontSize: 22.0, color: Colors.white)),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginWidget()),
+                  );
+                })));
+  }
+
   Widget image() {
-    return Image(
-      image: AssetImage('images/home_image1.jpg'),
+    return Container(
       width: 325,
       height: 250,
-      fit: BoxFit.cover,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: new ExactAssetImage('images/home_image1.jpg'),
+          fit: BoxFit.cover,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Colors.red[800],
+          width: 5.0,
+        ),
+      ),
     );
   }
 
@@ -49,10 +94,7 @@ class _HomePage extends State<HomePage> {
           padding: EdgeInsets.all(15.0),
           child: new ListView(
             shrinkWrap: true,
-            children: <Widget>[
-              image(),
-              goToChatbot(),
-            ],
+            children: <Widget>[image(), goToChatbot(), logOut()],
           ),
         ));
   }
