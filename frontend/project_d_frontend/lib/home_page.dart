@@ -71,18 +71,8 @@ class _HomePageDialogflow extends State<HomePageDialogflow> {
       var temp = message.text.replaceAll("great we will see you on:", "");
 
       var temp2 = temp.split(" ");
-      var day = temp2[1];
-      var answerday;
-      switch(day) {
-        case "Mon": {answerday = 1;} break;
-        case "Tue": {answerday = 2;} break;
-        case "Wed": {answerday = 3;}  break;
-        case "Thu": {answerday = 4;}  break;
-        case "Fri": {answerday = 5;}  break;
-        case "Sat": {answerday = 6;}  break;
-        case "Sun": {answerday = 7;}  break;
-        default: {answerday = 0;}break;
-      }
+      var answerday = temp2[3];
+
       String month = temp2[2];
       var answermonth;
       switch(month) {
@@ -95,32 +85,34 @@ class _HomePageDialogflow extends State<HomePageDialogflow> {
         default: {answermonth = 0;}break;
       }
       var year = temp2[4];
-      var hour = temp2[5];
-
+      String hour = temp2[5];
+      hour = hour.replaceAll(":", "");
       //"2012-02-27 13:27:00"
-      hour = hour.toString();
-      String hour2 =hour.substring(0, hour.indexOf(':'));
+
+      String hour2 =hour.substring(0, 2);
       var hour3 = int.parse(hour2) ;
+      hour3= hour3+1;
       if(hour3 <10){
-        hour2 ="0" +hour3.toString() + ":00:00";
+        hour2 ="0" +hour3.toString() + "0000";
       }else {
-        hour2 =hour3.toString() + ":00:00";
+        hour2 =hour3.toString() + "0000";
       }
 
-      //2017-11-01T00:00:00
-      //text=My+event&dates=20190801T090000Z/20190801T093000Z;
-      String date = year +"-" +answermonth + "-0" + answerday.toString() + "T" + hour+"Z";
-      String date2 = year +"-" +answermonth + "-0" + answerday.toString() + "T" + hour2+"Z";
+
+      String date = year  +answermonth  + answerday + "T" + hour;
+      String date2 = year  +answermonth  + answerday+ "T" + hour2;
+
 
       String help  = "text=A+Meeting+With+Swisscom&dates=" +date+"/" +date2 + '&details=A+Meeting+with+swisscom';
 
-      _launchURL2(help);
+
+      var link = "https://calendar.google.com/calendar/r/eventedit?"+ help;
+      _launchURL2(link);
 
     }
   }
-
   _launchURL2(date) async {
-    String url = 'https://calendar.google.com/calendar/r/event?dates=' + date;
+    String url = date;
 
     if (await canLaunch(url)) {
       await launch(url);
