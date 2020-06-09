@@ -4,16 +4,12 @@ import 'package:project_d_frontend/home_page.dart';
 
 abstract class BaseAuth {
   Future<String> signIn(String email, String password);
-
   Future<String> signUp(String email, String password);
-
+  //Future<String> getUid();
   Future<FirebaseUser> getUser();
-
-  Future<String> getUid();
-
-  Future<void> sendEmailVerification();
-
-  Future<bool> isEmailVerified();
+  Future<void> signOut(); 
+  Future<void> passwordResetEmail(String email);
+  
 }
 
 class Auth implements BaseAuth {
@@ -33,25 +29,28 @@ class Auth implements BaseAuth {
     return user.uid;
   }
 
-  Future<String> getUid() async {
-    FirebaseUser user = await _firebaseAuth.currentUser();
-    return user.uid;
-  }
-
-  Future<bool> isEmailVerified() {
-    // TODO: implement isEmailVerified
-    throw UnimplementedError();
-  }
-
-  Future<void> sendEmailVerification() {
-    // TODO: implement sendEmailVerification
-    throw UnimplementedError();
-  }
+  // made it to pass the uid to dialog flow, but this was not possible 
+  // Future<String> getUid() async {
+  //   FirebaseUser user = await _firebaseAuth.currentUser();
+  //   return user.uid;
+  // }
 
   Future<FirebaseUser> getUser() async {
     FirebaseUser user = await _firebaseAuth.currentUser();
     return user;
   }
+
+  Future<void> signOut() {
+    return _firebaseAuth.signOut();
+  }
+
+  Future<void> passwordResetEmail(String email) async {
+    return (await _firebaseAuth.sendPasswordResetEmail(email: email));
+  }
+
+  
+
+
 
   
 }
