@@ -108,7 +108,7 @@ class _HomePage extends State<HomePage> {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: Colors.red[800],
-          width: 8.0,
+          width: 5.0,
         ),
       ),
     );
