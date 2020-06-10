@@ -38,13 +38,13 @@ class _LoginWidget extends State<LoginWidget> {
           globals.userid = uId;
           print('Signed in: $uId');
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => HomePage()));
+              context, MaterialPageRoute(builder: (context) => new HomePage(auth: new Auth())));
         } else {
           uId = await widget.auth.signUp(_email, _password);
           globals.userid = uId;
           print('Signed up user: $uId');
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => HomePage()));
+              context, MaterialPageRoute(builder: (context) => new HomePage(auth: new Auth())));
         }
       } catch (e) {
         print('Error: $e');
@@ -52,6 +52,7 @@ class _LoginWidget extends State<LoginWidget> {
           _formKey.currentState.reset();
         });
       }
+      
     }
   }
 

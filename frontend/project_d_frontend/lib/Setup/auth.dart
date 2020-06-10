@@ -29,7 +29,7 @@ class Auth implements BaseAuth {
     return user.uid;
   }
 
-  // made it to pass the uid to dialog flow, but this was not possible 
+  
   // Future<String> getUid() async {
   //   FirebaseUser user = await _firebaseAuth.currentUser();
   //   return user.uid;

@@ -9,7 +9,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-        home: new LoginWidget(auth: new Auth())
+        home: new HomePage()
+        //new LoginWidget(auth: new Auth())
 
 
     );
