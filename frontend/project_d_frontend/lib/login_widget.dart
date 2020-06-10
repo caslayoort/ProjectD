@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_d_frontend/Setup/auth.dart';
 import 'package:project_d_frontend/home_page.dart';
+import 'library.dart' as globals;
 
 class LoginWidget extends StatefulWidget {
   LoginWidget({this.auth});
@@ -34,14 +35,16 @@ class _LoginWidget extends State<LoginWidget> {
       try {
         if (signin) {
           uId = await widget.auth.signIn(_email, _password);
+          globals.userid = uId;
           print('Signed in: $uId');
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => HomePageDialogflow()));
+              context, MaterialPageRoute(builder: (context) => new HomePage(auth: new Auth())));
         } else {
           uId = await widget.auth.signUp(_email, _password);
+          globals.userid = uId;
           print('Signed up user: $uId');
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => HomePageDialogflow()));
+              context, MaterialPageRoute(builder: (context) => new HomePage(auth: new Auth())));
         }
       } catch (e) {
         print('Error: $e');
@@ -49,6 +52,7 @@ class _LoginWidget extends State<LoginWidget> {
           _formKey.currentState.reset();
         });
       }
+      
     }
   }
 
@@ -73,7 +77,7 @@ class _LoginWidget extends State<LoginWidget> {
 
   Widget login() {
     return new Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
+        padding: EdgeInsets.fromLTRB(0.0, 35.0, 0.0, 0.0),
         child: SizedBox(
             height: 45.0,
             child: new RaisedButton(
@@ -94,6 +98,27 @@ class _LoginWidget extends State<LoginWidget> {
             style: new TextStyle(fontSize: 20.0, fontWeight: FontWeight.w300)),
         onPressed: changeform);
   }
+
+  void changePassword() async {
+    if (validateInput()) {
+      try {
+        await widget.auth.passwordResetEmail(_email);
+        print("Email to change your password is send");
+      } catch (a) {
+        print('Error: $a');
+      }
+    }
+  }
+
+  Widget changePasswordButton() {
+    return new FlatButton(
+        child: new Text(
+            'Forgot password?',
+            style: new TextStyle(fontSize: 15.0)),
+        onPressed: changePassword);
+  }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +149,7 @@ class _LoginWidget extends State<LoginWidget> {
     final password = Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
       child: new TextFormField(
-        validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
+        //validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
         onSaved: (value) => _password = value.trim(),
         keyboardType: TextInputType.visiblePassword,
         obscureText: _obscureText,
@@ -160,6 +185,7 @@ class _LoginWidget extends State<LoginWidget> {
                   password,
                   login(),
                   createAccount(),
+                  changePasswordButton()
                 ],
               ),
             )));
