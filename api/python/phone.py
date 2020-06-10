@@ -9,9 +9,6 @@ if __name__ == "__main__":
     cred = credentials.Certificate("./firebase.json")
     firebase_admin.initialize_app(cred)
 
-sys.path.append('./recommendation.py')
-import recommendation as recommend
-
 db = firestore.client()
 
 def Phone(question_raw, intentIsRight):

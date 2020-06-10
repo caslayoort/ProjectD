@@ -46,7 +46,7 @@ const responsejsonCaslay = (resp) => {
 };
 
 // Logs request to a file for python. Also puts it in firebase so we could see it there to make responses personal based on your past.
-const logreq = (r) => {
+const logreq = (r, uuid) => {
   if (typeof r !== 'undefined' && r){
     // Creating a log in the log/requests folder with the epoch time format as name of the .log file.
     let date = Math.floor(new Date());
@@ -57,15 +57,15 @@ const logreq = (r) => {
     });    
 
     // Log the request to firebase. Needs to be activated when we receive the uuid of the person that's logged in.
-    if (false){
+    if (typeof uuid !== 'undefined' && uuid){
     var docData = {
       request: `${r.queryResult.queryText}`,
-      uuid: "UUID"
+      uuid: `${uuid}`
     };
     db.collection("askedquestions").doc(`${date}`).set(docData).then(function() {
       console.log("Request saved in firebase.");
     });
-  }
+  } else {console.log("not saving request for " + uuid);}
 
     return date;
   }
@@ -218,6 +218,13 @@ app.post('/webhook', (req, res) => {
       setTimeout(resolve, ms);
     });
   }
+  function getUserID(session) {
+    let sessionID = session.split("/")[4];
+    // The user is logged in if there is no - inside the sessionID
+    if (sessionID.indexOf("-") == -1) {
+      return sessionID;
+    } else {return false;}
+  }
 
   var data = req.body;
 
@@ -226,10 +233,11 @@ app.post('/webhook', (req, res) => {
 
   if ( typeof data !== 'undefined' && data ){
     let question = data.queryResult.queryText;
-    const timestamp = logreq(data);
+    let userID = getUserID(data.session);
+    const timestamp = logreq(data, userID);
     console.log("\nQuestion:\n" + question);
 
-    global.action = data.queryResult.action
+    global.action = data.queryResult.action;
 
     // Laurens request
     if (typeof global.action !== 'undefined' && global.action && global.action !== "input.unknown"){
@@ -299,4 +307,35 @@ var server = app.listen(port, () => {
 
   console.log("api running on " + host + ":" + port);
 
+});
+
+app.post('/api/firebase', (req, res) => {
+  var data = req.body;
+  var collection = data.collection;
+  var docname = data.entryName;
+  var context = data.context;
+
+  console.log(data);
+
+  if (collection == "phones"){
+    res.send("Submitted!");
+    if (collection == "phones"){
+      db.collection("phones").doc(`${docname}`).set(context).then(function() {
+        res.send("Submitted!");
+      }).catch(function(){
+      res.send("Something went wrong!");});
+    }
+
+  }
+  if (collection == "subscriptions"){
+    var docData = {
+      datasize: `${context.datasize}`,
+      price: `${context.price}`
+    };
+    db.collection("subscriptions").doc(`${docname}`).set(docData).then(function() {
+      res.send("Submitted!");
+    }).catch(function(){
+      res.send("Something went wrong!");});
+  }
+  else {res.send("Error: collection does not exists.")}
 });
