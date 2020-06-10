@@ -127,7 +127,7 @@ class _HomePage extends State<HomePage> {
           child: new ListView(
             shrinkWrap: true,
             children: <Widget>[
-              SizedBox(height: 10),
+              
               image(),
               showText(),
               goToChatbot(),
